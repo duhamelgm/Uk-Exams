@@ -1,0 +1,30 @@
+.searchform {
+  display: flex;
+  justify-content: stretch;
+}
+
+.input-borded {
+  border-radius: 35px;
+}
+
+#search {
+  border-radius: 35px 0 0 35px;
+  padding: 1rem 1.5rem;
+}
+#searchbtn {
+  border: none;
+  border-radius: 0 35px 35px 0;
+  padding: 1rem 2rem;
+}
+
+#breadcrumbs {
+  display: flex;
+
+  li {
+    color: #fff;
+    font-size: 0.8rem;
+    a {
+      color: #fff;
+    }
+  }
+}

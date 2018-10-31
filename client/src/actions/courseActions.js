@@ -6,7 +6,8 @@ import {
   UPDATE_COURSE,
   GET_ERRORS,
   GET_COURSES,
-  ADD_COURSE
+  ADD_COURSE,
+  GET_COURSE_QUIZ
 } from "./types";
 
 axiosDefaults.baseURL = "/";
@@ -60,6 +61,24 @@ export const getCourse = handle => dispatch => {
     .catch(err => {
       dispatch({
         type: GET_COURSE,
+        payload: null
+      });
+    });
+};
+
+// Get course quiz
+export const getCourseQuiz = handle => dispatch => {
+  axios
+    .get(`api/courses/${handle}/quiz`)
+    .then(res => {
+      dispatch({
+        type: GET_COURSE_QUIZ,
+        payload: res.data
+      });
+    })
+    .catch(err => {
+      dispatch({
+        type: GET_COURSE_QUIZ,
         payload: null
       });
     });

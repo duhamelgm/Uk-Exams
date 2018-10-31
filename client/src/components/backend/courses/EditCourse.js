@@ -37,20 +37,22 @@ class EditCourse extends Component {
     if (this.props.course !== prevProps.course) {
       console.log(this.props.course);
 
-      let newPlans = this.props.course.course.plans.map(plan => {
-        return {
-          title: plan.title,
-          subscription: plan.subscription,
-          price: plan.price
-        };
-      });
+      if (this.props.course.course) {
+        let newPlans = this.props.course.course.plans.map(plan => {
+          return {
+            title: plan.title,
+            subscription: plan.subscription,
+            price: plan.price
+          };
+        });
 
-      this.setState({
-        handle: this.props.match.params.handle,
-        title: this.props.course.course.title,
-        description: this.props.course.course.description,
-        plans: newPlans
-      });
+        this.setState({
+          handle: this.props.match.params.handle,
+          title: this.props.course.course.title,
+          description: this.props.course.course.description,
+          plans: newPlans
+        });
+      }
     }
   }
 
@@ -123,6 +125,7 @@ class EditCourse extends Component {
     console.log(newCourse);
 
     if (this.props.match.params.handle) {
+      console.log(this.props.match.params.handle);
       this.props.updateCourse(newCourse, this.props.match.params.handle);
     } else {
       this.props.addCourse(newCourse);

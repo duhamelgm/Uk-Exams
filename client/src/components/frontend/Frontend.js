@@ -12,6 +12,7 @@ import Register from "./pages/Register";
 import Dashboard from "./dashboard/Dashboard";
 import ProfileSettings from "./dashboard/ProfileSettings";
 import SingleCourse from "./courses/SingleCourse";
+import Quiz from "./courses/Quiz";
 
 export default class Frontend extends Component {
   render() {
@@ -34,6 +35,7 @@ export default class Frontend extends Component {
               />
             </Switch>
             <Route exact path="/courses/:handle" component={SingleCourse} />
+            <Route exact path="/courses/:handle/quiz" component={Quiz} />
             <Footer />
           </div>
         </Router>

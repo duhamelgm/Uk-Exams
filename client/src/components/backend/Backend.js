@@ -21,7 +21,14 @@ export default class Backend extends Component {
                 <Sidebar />
                 <Route exact path="/" component={Dashboard} />
                 <Route exact path="/courses" component={Courses} />
-                <Route exact path="/courses/:handle" component={EditCourse} />
+                <Switch>
+                  <Route
+                    exact
+                    path="/courses/add-course"
+                    component={EditCourse}
+                  />
+                  <Route exact path="/courses/:handle" component={EditCourse} />
+                </Switch>
               </div>
             </div>
           </div>

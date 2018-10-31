@@ -7,6 +7,7 @@ const path = require("path");
 const users = require("./routes/api/users");
 const profiles = require("./routes/api/profiles");
 const courses = require("./routes/api/courses");
+const quiz = require("./routes/api/quiz");
 
 const app = express();
 
@@ -38,6 +39,7 @@ require("./config/passport")(passport);
 app.use("/api/users", users);
 app.use("/api/profiles", profiles);
 app.use("/api/courses", courses);
+app.use("/api/quiz", quiz);
 
 // Admin routes
 app.use("/admin/api/courses", courses);

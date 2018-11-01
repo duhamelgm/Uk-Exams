@@ -11,10 +11,18 @@ const Quiz = require("../../models/Quiz");
 // @desc        Get current user profile
 // @acces       Private
 router.get("/:handle", (req, res) => {
-  Quiz.find({ courseHandle: req.params.handle }).then(quiz => {
-    if (quiz) res.json(quiz);
-    res.status(404);
-  });
+  Course.findOne({ handle: req.params.handle })
+    .then(course => {
+      if (!course) res.status(404);
+      Quiz.find({ course: course._id })
+        .then(quiz => {
+          if (!quiz) res.status(404);
+
+          res.json(quiz);
+        })
+        .catch(err => console.log(err));
+    })
+    .catch(err => console.log(err));
 });
 
 module.exports = router;

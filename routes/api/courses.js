@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const passport = require("passport");
+const validateCourseInput = require("../../validation/courses");
 
 // Load Course Model
 const Course = require("../../models/Course");
@@ -68,6 +69,12 @@ router.post(
   passport.authenticate("jwt", { session: false }),
   (req, res, next) => isAdminAuthenticated(req, res, next),
   (req, res) => {
+    const { errors, isValid } = validateCourseInput(req.body);
+
+    if (!isValid) {
+      return res.status(400).json(errors);
+    }
+
     Course.findOne({ handle: req.body.handle }).then(course => {
       if (course) {
         res.status(400).json({ handle: "Handle exists" });
@@ -79,15 +86,23 @@ router.post(
           plans: req.body.plans
         });
 
-        const quiz = new Quiz({
-          courseHandle: req.body.handle,
-          quiz: req.body.quiz
-        });
-
         course
           .save()
           .then(course => {
-            quiz.save();
+            for (quiz in req.body.quiz) {
+              let newQuiz = new Quiz({
+                course: course._id,
+                question: req.body.quiz[quiz].question,
+                optionA: req.body.quiz[quiz].optionA,
+                optionB: req.body.quiz[quiz].optionB,
+                optionC: req.body.quiz[quiz].optionC,
+                optionD: req.body.quiz[quiz].optionD,
+                answerOption: req.body.quiz[quiz].answerOption,
+                answerDescription: req.body.quiz[quiz].answerDescription
+              });
+
+              newQuiz.save().catch(err => console.log(err));
+            }
             res.json(course);
           })
           .catch(err => res.status(400).json(err));
@@ -108,13 +123,17 @@ router.post(
       handle: req.body.handle,
       title: req.body.title,
       description: req.body.description,
-      plans: req.body.plans,
-      quiz: req.body.quiz
+      plans: req.body.plans
     };
 
-    Course.findOneAndUpdate({ handle: req.params.handle }, { $set: { course } })
+    Course.findOneAndUpdate(
+      { handle: req.params.handle },
+      { $set: course },
+      { new: true }
+    )
       .then(course => {
         if (!course) res.status(400).json("Error");
+        res.json(course);
       })
       .catch(err => res.status(400).json(err));
   }

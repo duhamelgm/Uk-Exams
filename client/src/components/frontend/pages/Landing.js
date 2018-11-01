@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { getDashboardCourses } from "../../../actions/courseActions";
-import { throws } from "assert";
 import { Link } from "react-router-dom";
 
 class Landing extends Component {

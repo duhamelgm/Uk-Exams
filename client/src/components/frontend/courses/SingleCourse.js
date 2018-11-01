@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { getCourse } from "../../../actions/courseActions";
 import { connect } from "react-redux";
+import { Link, Redirect } from "react-router-dom";
 import PropTypes from "prop-types";
-import Sidebar from "../../common/Sidebar";
 import Spinner from "../../common/Spinner";
 
 class SingleCourse extends Component {
@@ -19,6 +19,10 @@ class SingleCourse extends Component {
 
   componentDidUpdate(prevProps) {
     if (this.props.course !== prevProps.course) {
+      if (this.props.course.course === null) {
+        this.props.history.push("/");
+      }
+
       this.setState({
         course: this.props.course.course
       });
@@ -29,6 +33,30 @@ class SingleCourse extends Component {
     let course = this.state.course;
 
     if (Object.keys(course).length > 0) {
+      let plans = course.plans;
+
+      if (this.props.auth.isAuthenticated) {
+        plans = <Link to={`${this.state.course.handle}/quiz`}>Go</Link>;
+      } else {
+        plans = plans.map((plan, id) => (
+          <div
+            className="card"
+            key={id}
+            style={
+              plans.length == 1
+                ? { borderBottom: "1px solid rgba(0, 0, 0, 0.125)" }
+                : {}
+            }
+          >
+            <div className="card-header">{plan.title}</div>
+            <div className="card-body">
+              <p>{plan.subscription}</p>
+              <p>{plan.price}</p>
+            </div>
+          </div>
+        ));
+      }
+
       course = (
         <div class="container">
           <div class="row">
@@ -86,7 +114,27 @@ class SingleCourse extends Component {
               <hr />
             </div>
 
-            <Sidebar handle={this.props.match.params.handle} />
+            <div class="col-lg-4">
+              <div class="accordion my-4">{plans}</div>
+
+              <div class="card my-4">
+                <h5 class="card-header">Search</h5>
+                <div class="card-body">
+                  <div class="input-group">
+                    <input
+                      type="text"
+                      class="form-control"
+                      placeholder="Search for..."
+                    />
+                    <span class="input-group-btn">
+                      <button class="btn btn-secondary" type="button">
+                        Go!
+                      </button>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       );
@@ -100,10 +148,14 @@ class SingleCourse extends Component {
 
 SingleCourse.propTypes = {
   getCourse: PropTypes.func.isRequired,
+  auth: PropTypes.object.isRequired,
+  profile: PropTypes.object.isRequired,
   course: PropTypes.object.isRequired
 };
 
 const mapStateToProptypes = state => ({
+  auth: state.auth,
+  profile: state.profile,
   course: state.course
 });
 

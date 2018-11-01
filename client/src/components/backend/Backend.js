@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import PrivateRoute from "../common/PrivateRoute";
 
 import Navbar from "./layout/Navbar";
 import Sidebar from "./layout/Sidebar";

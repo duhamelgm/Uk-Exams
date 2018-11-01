@@ -7,7 +7,8 @@ import {
   GET_ERRORS,
   GET_COURSES,
   ADD_COURSE,
-  GET_COURSE_QUIZ
+  COURSES_LOADING,
+  RESET_MSG
 } from "./types";
 
 axiosDefaults.baseURL = "/";
@@ -66,32 +67,17 @@ export const getCourse = handle => dispatch => {
     });
 };
 
-// Get course quiz
-export const getCourseQuiz = handle => dispatch => {
-  axios
-    .get(`api/courses/${handle}/quiz`)
-    .then(res => {
-      dispatch({
-        type: GET_COURSE_QUIZ,
-        payload: res.data
-      });
-    })
-    .catch(err => {
-      dispatch({
-        type: GET_COURSE_QUIZ,
-        payload: null
-      });
-    });
-};
-
 // Add course
 export const addCourse = course => dispatch => {
+  dispatch(setCourseLoading());
+
   axios
     .post("api/courses/", course)
     .then(res => {
       dispatch({
         type: ADD_COURSE,
-        payload: res.data
+        payload: res.data,
+        msg: "created"
       });
     })
     .catch(err => {
@@ -104,12 +90,15 @@ export const addCourse = course => dispatch => {
 
 // Update course
 export const updateCourse = (course, handle) => dispatch => {
+  dispatch(setCourseLoading());
+
   axios
     .post(`api/courses/${handle}`, course)
     .then(res => {
       dispatch({
         type: UPDATE_COURSE,
-        payload: res.data
+        payload: res.data,
+        msg: "updated"
       });
     })
     .catch(err => {
@@ -118,4 +107,19 @@ export const updateCourse = (course, handle) => dispatch => {
         payload: err.response.data
       });
     });
+};
+
+// Course loading
+export const resetMsg = callback => dispatch => {
+  dispatch({
+    type: RESET_MSG
+  });
+  callback();
+};
+
+// Course loading
+export const setCourseLoading = () => {
+  return {
+    type: COURSES_LOADING
+  };
 };

@@ -5,7 +5,8 @@ import PropTypes from "prop-types";
 import {
   updateCourse,
   getCourse,
-  addCourse
+  addCourse,
+  resetMsg
 } from "../../../actions/courseActions";
 
 import * as XLSX from "xlsx";
@@ -25,19 +26,20 @@ class EditCourse extends Component {
         }
       ],
       quiz: [{}],
+      msg: "",
       errors: {}
     };
   }
 
   componentDidMount() {
-    this.props.getCourse(this.props.match.params.handle);
+    if (this.props.match.params.handle) {
+      this.props.getCourse(this.props.match.params.handle);
+    }
   }
 
   componentDidUpdate(prevProps) {
     if (this.props.course !== prevProps.course) {
-      console.log(this.props.course);
-
-      if (this.props.course.course) {
+      if (this.props.course.course !== prevProps.course.course) {
         let newPlans = this.props.course.course.plans.map(plan => {
           return {
             title: plan.title,
@@ -47,12 +49,29 @@ class EditCourse extends Component {
         });
 
         this.setState({
-          handle: this.props.match.params.handle,
+          handle: this.props.course.course.handle,
           title: this.props.course.course.title,
           description: this.props.course.course.description,
           plans: newPlans
         });
       }
+
+      if (this.props.course.msg === "updated") {
+        this.props.resetMsg(() => {
+          alert("The course was successfully updated");
+        });
+      } else if (this.props.course.msg === "created") {
+        this.props.resetMsg(() => {
+          alert("The course was successfully created");
+          this.props.history.push("/courses");
+        });
+      }
+    }
+
+    if (this.props.errors !== prevProps.errors) {
+      this.setState({
+        errors: this.props.errors
+      });
     }
   }
 
@@ -64,12 +83,10 @@ class EditCourse extends Component {
       /* Parse data */
       const bstr = evt.target.result;
       const wb = XLSX.read(bstr, { type: "binary" });
-      console.log(wb);
       /* Get first worksheet */
       const wsname = wb.SheetNames[0];
       const ws = wb.Sheets[wsname];
       /* Convert array of arrays */
-      console.log(ws);
       const data = XLSX.utils.sheet_to_json(ws, {});
       /* Update state */
       console.log(data);
@@ -107,7 +124,6 @@ class EditCourse extends Component {
   };
 
   onChange = e => {
-    console.log(e.target.name);
     this.setState({ [e.target.name]: e.target.value });
   };
 
@@ -122,10 +138,7 @@ class EditCourse extends Component {
       quiz: this.state.quiz
     };
 
-    console.log(newCourse);
-
     if (this.props.match.params.handle) {
-      console.log(this.props.match.params.handle);
       this.props.updateCourse(newCourse, this.props.match.params.handle);
     } else {
       this.props.addCourse(newCourse);
@@ -134,103 +147,132 @@ class EditCourse extends Component {
 
   render() {
     const { errors } = this.state;
+    let planErrors = [];
+
+    if (this.state.msg === "updated") {
+      console.log("hola");
+      this.props.course.msg = "";
+    }
 
     return (
       <div className="container my-4">
-        <form onSubmit={this.onSubmit}>
-          <TextFieldGroup
-            name="title"
-            placeholder="Title of the course"
-            value={this.state.title}
-            onChange={this.onChange}
-            error={errors.title}
-          />
+        <div className="row">
+          <div className="col-lg-8">
+            <form onSubmit={this.onSubmit}>
+              <TextFieldGroup
+                name="title"
+                placeholder="Title of the course"
+                value={this.state.title}
+                onChange={this.onChange}
+                error={errors.title}
+              />
 
-          <TextFieldGroup
-            name="description"
-            placeholder="Description"
-            value={this.state.description}
-            onChange={this.onChange}
-            error={errors.description}
-          />
+              <TextFieldGroup
+                name="description"
+                placeholder="Description"
+                value={this.state.description}
+                onChange={this.onChange}
+                error={errors.description}
+              />
 
-          <TextFieldGroup
-            name="handle"
-            placeholder="Handle of the course"
-            value={this.state.handle}
-            onChange={this.onChange}
-            error={errors.handle}
-          />
+              <TextFieldGroup
+                name="handle"
+                placeholder="Handle of the course"
+                value={this.state.handle}
+                onChange={this.onChange}
+                error={errors.handle}
+              />
+              <div className="form-group">
+                <div className="accordion">
+                  {this.state.plans.map((plan, id) => {
+                    planErrors.push({});
+                    if (Array.isArray(errors.plans)) {
+                      if (
+                        errors.plans.length >= id &&
+                        errors.plans[id] !== undefined
+                      ) {
+                        planErrors[id] = errors.plans[id];
+                      }
+                    }
 
-          <div className="accordion">
-            {this.state.plans.map((plan, id) => (
-              <div className="form-group" key={id}>
-                <div className="card">
-                  <div className="card-header">
-                    <h5 className="mb-0">
-                      {plan.title ? plan.title : "New plan"}
-                    </h5>
-                  </div>
-                  <div className="collapse show">
-                    <div className="card-body">
-                      <TextFieldGroup
-                        name="title"
-                        placeholder="Title of this plan"
-                        value={plan.title}
-                        onChange={this.onChangePlan(id)}
-                        error={errors.title}
-                      />
+                    return (
+                      <div className="card" key={id}>
+                        <div className="card-header d-flex justify-content-between">
+                          <h5 className="mb-0">
+                            {plan.title ? plan.title : "New plan"}
+                          </h5>
+                          <button
+                            type="button"
+                            className="close"
+                            onClick={this.removeSubscription(id)}
+                          >
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                        </div>
+                        <div className="collapse show">
+                          <div className="card-body">
+                            <TextFieldGroup
+                              name="title"
+                              placeholder="Title of this plan"
+                              value={plan.title}
+                              onChange={this.onChangePlan(id)}
+                              error={planErrors[id].title}
+                            />
 
-                      <TextFieldGroup
-                        name="subscription"
-                        placeholder="Type of subscription"
-                        value={plan.subscription}
-                        onChange={this.onChangePlan(id)}
-                        error={errors.subscription}
-                      />
+                            <TextFieldGroup
+                              name="subscription"
+                              placeholder="Type of subscription"
+                              value={plan.subscription}
+                              onChange={this.onChangePlan(id)}
+                              error={planErrors[id].subscription}
+                            />
 
-                      <TextFieldGroup
-                        name="price"
-                        placeholder="Price of this plan"
-                        value={plan.price}
-                        onChange={this.onChangePlan(id)}
-                        error={errors.price}
-                      />
-
-                      <div className="form-group">
-                        <button
-                          className="btn btn-danger"
-                          onClick={this.removeSubscription(id)}
-                          type="button"
-                        >
-                          Remove
-                        </button>
+                            <TextFieldGroup
+                              name="price"
+                              placeholder="Price of this plan"
+                              value={plan.price}
+                              onChange={this.onChangePlan(id)}
+                              error={planErrors[id].price}
+                            />
+                          </div>
+                        </div>
                       </div>
+                    );
+                  })}
+
+                  <div className="card">
+                    <div className="card-header d-flex justify-content-center align-items-center flex-column">
+                      <h5 className="text-danger">{errors.plan}</h5>
+                      <button
+                        className="btn btn-info"
+                        onClick={this.addSubscription}
+                        type="button"
+                      >
+                        Add new Subscription plan
+                      </button>
                     </div>
                   </div>
                 </div>
               </div>
-            ))}
-          </div>
 
-          <div className="form-group">
-            <button
-              className="btn btn-info btn-lg"
-              onClick={this.addSubscription}
-              type="button"
-            >
-              Add
-            </button>
-          </div>
+              <div className="form-group">
+                <div className="card">
+                  <div className="card-header">
+                    <h5 className="text-danger">{errors.quiz}</h5>
+                    <h5 className="mb-0">Add a quiz to the course</h5>
+                  </div>
+                  <div className="card-body">
+                    <input type="file" onChange={this.handleFileUpload} />
+                  </div>
+                </div>
+              </div>
 
-          <div className="form-group">
-            <input type="file" onChange={this.handleFileUpload} />
+              <button className="btn btn-lg btn-secondary" type="submit">
+                Submit
+              </button>
+            </form>
           </div>
-
-          <button className="btn btn-lg btn-secondary" type="submit">
-            Submit
-          </button>
-        </form>
+        </div>
       </div>
     );
   }
@@ -240,6 +282,7 @@ EditCourse.propTypes = {
   updateCourse: PropTypes.func.isRequired,
   getCourse: PropTypes.func.isRequired,
   addCourse: PropTypes.func.isRequired,
+  resetMsg: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
   course: PropTypes.object.isRequired,
   errors: PropTypes.object.isRequired
@@ -253,5 +296,5 @@ const mapStateToProptypes = state => ({
 
 export default connect(
   mapStateToProptypes,
-  { updateCourse, getCourse, addCourse }
+  { updateCourse, getCourse, addCourse, resetMsg }
 )(EditCourse);

@@ -8,7 +8,7 @@ import jwt_decode from "jwt-decode";
 import { setCurrentUser, logoutUser } from "./actions/authActions";
 import { clearCurrentProfile } from "./actions/profileActions";
 
-import PrivateRoute from "./components/common/PrivateRoute";
+import AdminRoute from "./components/common/AdminRoute";
 
 import Frontend from "./components/frontend/Frontend";
 import Backend from "./components/backend/Backend";
@@ -43,7 +43,7 @@ class App extends Component {
         <Router>
           <div className="App">
             <Switch>
-              <PrivateRoute path="/admin" component={Backend} />
+              <AdminRoute path="/admin" component={Backend} />
               <Route path="/" component={Frontend} />
             </Switch>
           </div>

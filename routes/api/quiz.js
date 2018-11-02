@@ -14,13 +14,20 @@ router.get("/:handle", (req, res) => {
   Course.findOne({ handle: req.params.handle })
     .then(course => {
       if (!course) res.status(404);
-      Quiz.find({ course: course._id })
-        .then(quiz => {
-          if (!quiz) res.status(404);
 
-          res.json(quiz);
+      Quiz.countDocuments({ course: course._id })
+        .then(num => {
+          Quiz.find({ course: course._id }).then(quiz => {
+            let quizes = [];
+            for (let i = 0; i < 5; i++) {
+              quizes.push(quiz[Math.floor(Math.random() * num)]);
+            }
+            res.json(quizes);
+          });
         })
-        .catch(err => console.log(err));
+        .catch(err => {
+          console.log(err);
+        });
     })
     .catch(err => console.log(err));
 });

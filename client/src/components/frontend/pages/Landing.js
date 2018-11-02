@@ -41,8 +41,8 @@ class Landing extends Component {
     return (
       <div>
         <div>
-          <div id="showcase" className="jumbotron">
-            <div className="container">
+          <div className="bg-primary" style={{ padding: "6rem 0 6rem 0" }}>
+            <div className="container d-flex flex-column align-items-center">
               <h1 className="text-white">
                 All your examinations revision needs at one place
               </h1>
@@ -73,7 +73,7 @@ class Landing extends Component {
             <div className="container">
               <div id="courses-list">
                 <div className="title">
-                  <h2 className="display-4">Our more recent courses</h2>
+                  <h2 className="display-4">Our courses</h2>
                   <hr />
                 </div>
 

@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import PrivateRoute from "../common/PrivateRoute";
 
-import Navbar from "./layout/Navbar";
+import FrontendNavbar from "./layout/FrontendNavbar";
 import Footer from "./layout/Footer";
 
 import Landing from "./pages/Landing";
@@ -20,7 +20,7 @@ export default class Frontend extends Component {
       <div>
         <Router basename="/">
           <div className="front-end">
-            <Navbar />
+            <FrontendNavbar />
             <Route exact path="/" component={Landing} />
             <Route exact path="/login" component={Login} />
             <Route exact path="/register" component={Register} />

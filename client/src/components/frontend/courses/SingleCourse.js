@@ -1,5 +1,9 @@
 import React, { Component } from "react";
 import { getCourse } from "../../../actions/courseActions";
+import {
+  addCourseToProfile,
+  getCurrentProfile
+} from "../../../actions/profileActions";
 import { connect } from "react-redux";
 import { Link, Redirect } from "react-router-dom";
 import PropTypes from "prop-types";
@@ -15,6 +19,7 @@ class SingleCourse extends Component {
 
   componentDidMount() {
     this.props.getCourse(this.props.match.params.handle);
+    this.props.getCurrentProfile();
   }
 
   componentDidUpdate(prevProps) {
@@ -29,14 +34,54 @@ class SingleCourse extends Component {
     }
   }
 
+  checkCourseOwned = () => {
+    let val = false;
+
+    if (this.props.profile.profile) {
+      if (this.props.profile.profile.coursesOwned) {
+        let { coursesOwned } = this.props.profile.profile;
+
+        coursesOwned.map((course, id) => {
+          if (course.course === this.state.course._id) {
+            val = true;
+          }
+        });
+      }
+    }
+
+    return val;
+  };
+
+  buyCourse = () => {
+    if (this.props.auth.isAuthenticated) {
+      this.props.addCourseToProfile(this.props.match.params.handle);
+    } else {
+      alert("Log in to buy a course");
+    }
+  };
+
   render() {
     let course = this.state.course;
+
+    let val = this.checkCourseOwned();
 
     if (Object.keys(course).length > 0) {
       let plans = course.plans;
 
-      if (this.props.auth.isAuthenticated) {
-        plans = <Link to={`${this.state.course.handle}/quiz`}>Go</Link>;
+      if (val) {
+        plans = (
+          <div className="card">
+            <div className="card-header">Start</div>
+            <div className="card-body">
+              <Link
+                className="btn btn-primary"
+                to={`${this.state.course.handle}/quiz`}
+              >
+                Go
+              </Link>
+            </div>
+          </div>
+        );
       } else {
         plans = plans.map((plan, id) => (
           <div
@@ -48,24 +93,31 @@ class SingleCourse extends Component {
                 : {}
             }
           >
-            <div className="card-header">{plan.title}</div>
-            <div className="card-body">
-              <p>{plan.subscription}</p>
-              <p>{plan.price}</p>
+            <div className="card-header">
+              <h4 className="card-title">{plan.title}</h4>
+            </div>
+            <div className="card-body d-flex justify-content-between align-items-center">
+              <p className="card-text my-0">
+                {plan.price}
+                &#163; each {plan.subscription}
+              </p>
+              <button className="btn btn-primary" onClick={this.buyCourse}>
+                Buy
+              </button>
             </div>
           </div>
         ));
       }
 
       course = (
-        <div class="container">
-          <div class="row">
-            <div class="col-lg-8">
-              <h1 class="mt-4">Maasai Serengeti</h1>
+        <div className="container">
+          <div className="row">
+            <div className="col-lg-8">
+              <h1 className="mt-4">Maasai Serengeti</h1>
 
               <hr />
 
-              <p class="lead">
+              <p className="lead">
                 Lorem ipsum dolor sit amet, consectetur adipisicing elit.
                 Ducimus, vero, obcaecati, aut, error quam sapiente nemo saepe
                 quibusdam sit excepturi nam quia corporis eligendi eos magni
@@ -86,12 +138,12 @@ class SingleCourse extends Component {
                 perspiciatis. Enim, iure!
               </p>
 
-              <blockquote class="blockquote">
-                <p class="mb-0">
+              <blockquote className="blockquote">
+                <p className="mb-0">
                   Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                   Integer posuere erat a ante.
                 </p>
-                <footer class="blockquote-footer">
+                <footer className="blockquote-footer">
                   Someone famous in
                   <cite title="Source Title">Source Title</cite>
                 </footer>
@@ -114,20 +166,20 @@ class SingleCourse extends Component {
               <hr />
             </div>
 
-            <div class="col-lg-4">
-              <div class="accordion my-4">{plans}</div>
+            <div className="col-lg-4">
+              <div className="accordion my-4">{plans}</div>
 
-              <div class="card my-4">
-                <h5 class="card-header">Search</h5>
-                <div class="card-body">
-                  <div class="input-group">
+              <div className="card my-4">
+                <h5 className="card-header">Search</h5>
+                <div className="card-body">
+                  <div className="input-group">
                     <input
                       type="text"
-                      class="form-control"
+                      className="form-control"
                       placeholder="Search for..."
                     />
-                    <span class="input-group-btn">
-                      <button class="btn btn-secondary" type="button">
+                    <span className="input-group-btn">
+                      <button className="btn btn-secondary" type="button">
                         Go!
                       </button>
                     </span>
@@ -148,6 +200,8 @@ class SingleCourse extends Component {
 
 SingleCourse.propTypes = {
   getCourse: PropTypes.func.isRequired,
+  addCourseToProfile: PropTypes.func.isRequired,
+  getCurrentProfile: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
   profile: PropTypes.object.isRequired,
   course: PropTypes.object.isRequired
@@ -161,5 +215,5 @@ const mapStateToProptypes = state => ({
 
 export default connect(
   mapStateToProptypes,
-  { getCourse }
+  { getCourse, addCourseToProfile, getCurrentProfile }
 )(SingleCourse);

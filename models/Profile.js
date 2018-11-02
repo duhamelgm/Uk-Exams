@@ -8,9 +8,16 @@ const ProfileSchema = new Schema({
     ref: "user"
   },
   location: {
-    type: String,
-    required: true
+    type: String
   },
+  coursesOwned: [
+    {
+      course: {
+        type: Schema.Types.ObjectId,
+        ref: "courses"
+      }
+    }
+  ],
   date: {
     type: Date,
     default: Date.now

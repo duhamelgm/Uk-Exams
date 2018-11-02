@@ -5,7 +5,8 @@ import {
   GET_ERRORS,
   GET_PROFILE,
   CLEAR_CURRENT_PROFILE,
-  UPDATE_PROFILE
+  UPDATE_PROFILE,
+  ADD_COURSE_TO_PROFILE
 } from "./types";
 
 // Get current profile
@@ -44,6 +45,24 @@ export const updateProfile = userProfile => dispatch => {
       dispatch({
         type: GET_ERRORS,
         payload: err.response.data
+      });
+    });
+};
+
+// Add course to profile
+export const addCourseToProfile = handle => dispatch => {
+  axios
+    .post(`api/profiles/add-course/${handle}`)
+    .then(res => {
+      dispatch({
+        type: ADD_COURSE_TO_PROFILE,
+        payload: res.data
+      });
+    })
+    .catch(err => {
+      dispatch({
+        type: ADD_COURSE_TO_PROFILE,
+        payload: {}
       });
     });
 };

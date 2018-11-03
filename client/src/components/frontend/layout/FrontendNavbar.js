@@ -57,7 +57,7 @@ class FrontendNavbar extends Component {
     const authLinks = (
       <Nav>
         <UncontrolledDropdown nav inNavbar>
-          <DropdownToggle nav caret>
+          <DropdownToggle className="text-white" nav caret>
             PROFILE
           </DropdownToggle>
           <DropdownMenu right>
@@ -133,18 +133,6 @@ class FrontendNavbar extends Component {
               <NavItem>
                 <Link className="nav-link text-white" to="/courses">
                   COURSES
-                </Link>
-              </NavItem>
-
-              <NavItem>
-                <Link className="nav-link text-white" to="/News">
-                  NEWS
-                </Link>
-              </NavItem>
-
-              <NavItem>
-                <Link className="nav-link text-white" to="/studyroom">
-                  STUDY ROOM
                 </Link>
               </NavItem>
 

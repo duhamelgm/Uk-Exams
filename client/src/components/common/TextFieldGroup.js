@@ -1,6 +1,7 @@
 import React from "react";
 import classnames from "classnames";
 import PropTypes from "prop-types";
+import { FormGroup, Input } from "reactstrap";
 
 const TextFieldGroup = ({
   name,
@@ -14,8 +15,8 @@ const TextFieldGroup = ({
   disabled
 }) => {
   return (
-    <div className="form-group">
-      <input
+    <FormGroup>
+      <Input
         type={type}
         name={name}
         className={classnames("form-control form-control-lg", {
@@ -28,7 +29,7 @@ const TextFieldGroup = ({
       />
       {info && <small className="form-text text-muted">{info}</small>}
       {error && <div className="invalid-feedback">{error}</div>}
-    </div>
+    </FormGroup>
   );
 };
 

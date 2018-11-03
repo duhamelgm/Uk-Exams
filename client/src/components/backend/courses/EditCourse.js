@@ -11,6 +11,8 @@ import {
 
 import * as XLSX from "xlsx";
 
+import { CustomInput, Form, FormGroup, Label, Input } from "reactstrap";
+
 class EditCourse extends Component {
   constructor() {
     super();
@@ -168,7 +170,20 @@ class EditCourse extends Component {
               />
 
               <TextFieldGroup
+                type="textarea"
                 name="description"
+                placeholder="Small description"
+                value={this.state.description}
+                onChange={this.onChange}
+                error={errors.description}
+                info={
+                  "A small description that will be displayed on the home page"
+                }
+              />
+
+              <TextFieldGroup
+                type="textarea"
+                name="smalldescription"
                 placeholder="Description"
                 value={this.state.description}
                 onChange={this.onChange}
@@ -262,7 +277,7 @@ class EditCourse extends Component {
                     <h5 className="mb-0">Add a quiz to the course</h5>
                   </div>
                   <div className="card-body">
-                    <input type="file" onChange={this.handleFileUpload} />
+                    <CustomInput type="file" onChange={this.handleFileUpload} />
                   </div>
                 </div>
               </div>

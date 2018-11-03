@@ -17,17 +17,10 @@ class Landing extends Component {
         <div className="card" key={id}>
           <div className="card-body">
             <h5 className="card-title">{course.title}</h5>
-            <p className="card-text">
-              This card has supporting text below as a natural lead-in to
-              additional content.
-            </p>
-            <p className="card-text">
-              <small className="text-muted">Last updated 3 mins ago</small>
-            </p>
+            <p className="card-text">{course.description}</p>
           </div>
 
-          <div className="card-footer">
-            <p>Nombre</p>
+          <div className="card-footer d-flex justify-content-between">
             <Link to={`courses/${course.handle}`} className="btn btn-secondary">
               Read More
             </Link>
@@ -43,28 +36,25 @@ class Landing extends Component {
         <div>
           <div className="bg-primary" style={{ padding: "6rem 0 6rem 0" }}>
             <div className="container d-flex flex-column align-items-center">
-              <h1 className="text-white">
+              <h1 className="text-white text-center">
                 All your examinations revision needs at one place
               </h1>
               <h2 className="text-ligth-blue">Complete revision solutions</h2>
               <form className="searchform">
-                <div className="form-group">
-                  <input
-                    type="text"
-                    name="s"
-                    id="search"
-                    className="form-control"
-                    placeholder="Search Exams"
-                  />
-                </div>
-                <div className="form-group">
-                  <input
-                    type="submit"
-                    value="Get Started"
-                    id="searchbtn"
-                    className="btn btn-secondary btn-lg form-control"
-                  />
-                </div>
+                <input
+                  type="text"
+                  name="s"
+                  id="search"
+                  className="form-control form-control-lg"
+                  placeholder="Search Exams"
+                />
+
+                <input
+                  type="submit"
+                  value="Get Started"
+                  id="searchbtn"
+                  className="btn btn-secondary btn-lg form-control form-control-lg"
+                />
               </form>
             </div>
           </div>
@@ -124,37 +114,6 @@ class Landing extends Component {
                   <h5 className="text-white">Revision notes</h5>
                 </li>
               </ul>
-            </div>
-          </div>
-
-          <div id="news" className="shadow-y">
-            <div className="container">
-              <div className="title">
-                <h2 className="display-4">Latest News</h2>
-                <hr />
-              </div>
-              <div className="news-container">
-                <div className="card shadow-sm">
-                  <div className="card-date">
-                    <h3>Dia</h3>
-                    <h5>Mes</h5>
-                  </div>
-
-                  <div className="card-data">
-                    <h4 className="card-title">
-                      <a href="<?php the_permalink() ?>">Title</a>
-                    </h4>
-                    <p className="lead">Autor</p>
-                  </div>
-
-                  <a
-                    href="<?php the_permalink() ?>"
-                    className="btn btn-outline-primary"
-                  >
-                    Read More
-                  </a>
-                </div>
-              </div>
             </div>
           </div>
         </div>

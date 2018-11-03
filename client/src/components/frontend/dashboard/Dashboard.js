@@ -21,18 +21,14 @@ class Dashboard extends Component {
     } else {
       // Check if logged user has profile data
       if (Object.keys(profile).length > 0) {
-        if (user.range === 2) {
-          dashboardContent = <h1>No verified</h1>;
-        } else if (user.range === 0) {
-          dashboardContent = (
-            <div>
-              <h1>Admin</h1>
-              <Link to="/edit-course" className="btn btn-lg btn-info">
-                Add course
-              </Link>
-            </div>
-          );
-        }
+        dashboardContent = (
+          <div>
+            <p>Welcome {user.name}</p>
+            <Link to="/profile-settings" className="btn btn-lg btn-info">
+              Go
+            </Link>
+          </div>
+        );
       } else {
         // User is logged in but has no profile
         dashboardContent = (

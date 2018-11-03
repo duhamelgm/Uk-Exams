@@ -11,6 +11,9 @@ const CourseSchema = new Schema({
     type: String,
     required: true
   },
+  smalldescription: {
+    type: String
+  },
   description: {
     type: String
   },

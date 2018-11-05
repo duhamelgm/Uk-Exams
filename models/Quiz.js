@@ -23,6 +23,9 @@ const QuizSchema = new Schema({
   optionD: {
     type: String
   },
+  optionE: {
+    type: String
+  },
   answerOption: {
     type: String,
     required: true

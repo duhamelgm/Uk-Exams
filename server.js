@@ -12,8 +12,8 @@ const quiz = require("./routes/api/quiz");
 const app = express();
 
 // Body Parser middleware
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ limit: "5mb", extended: true }));
+app.use(bodyParser.json({ limit: "5mb" }));
 
 // DB Config
 const db = require("./config/keys").mongoURI;

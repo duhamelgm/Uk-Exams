@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import { getQuiz } from "../../../actions/quizActions";
 import classnames from "classnames";
 import Spinner from "../../common/Spinner";
+import { Accordion } from "../../common/Accordion";
 
 class Quiz extends Component {
   constructor() {
@@ -161,6 +162,24 @@ class Quiz extends Component {
               >
                 {question.optionD}
               </label>
+
+              <input
+                className="d-none"
+                type="radio"
+                name="RadioInputName"
+                value="E"
+                id="optionE"
+                onChange={this.onRadioChange}
+                checked={optionSelected === "E"}
+              />
+              <label
+                className={classnames("list-group-item", {
+                  active: optionSelected === "E"
+                })}
+                htmlFor="optionE"
+              >
+                {question.optionE}
+              </label>
             </div>
             <div className="card-body d-flex justify-content-between">
               {quiz[currentQuestion - 1] ? (
@@ -202,14 +221,12 @@ class Quiz extends Component {
               <p>You get {results.correct} questions right</p>
             </div>
             <h2>Feedback</h2>
-            <div className="accordion">
+            <Accordion>
               {quiz.map((question, id) => (
-                <div className="card" key={id}>
-                  <div className="card-header">
-                    <h5 className="card-title">{question.question}</h5>
-                  </div>
+                <Accordion.Item key={id}>
+                  <Accordion.Header>{question.question}</Accordion.Header>
 
-                  <div className="card-body">
+                  <Accordion.Body>
                     <ul className="list-group">
                       <li
                         className={classnames("list-group-item", {
@@ -251,14 +268,24 @@ class Quiz extends Component {
                       >
                         {question.optionD}
                       </li>
+                      <li
+                        className={classnames("list-group-item", {
+                          "list-group-item-success":
+                            question.answerOption === "E",
+                          "list-group-item-danger":
+                            answers[id] === "E" && question.answerOption !== "E"
+                        })}
+                      >
+                        {question.optionE}
+                      </li>
                     </ul>
                     <p className="card-text my-4">
                       {question.answerDescription}
                     </p>
-                  </div>
-                </div>
+                  </Accordion.Body>
+                </Accordion.Item>
               ))}
-            </div>
+            </Accordion>
           </div>
         );
       } else {

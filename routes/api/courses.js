@@ -82,6 +82,7 @@ router.post(
         const course = new Course({
           handle: req.body.handle,
           title: req.body.title,
+          smalldescription: req.body.smalldescription,
           description: req.body.description,
           plans: req.body.plans
         });
@@ -97,6 +98,7 @@ router.post(
                 optionB: req.body.quiz[quiz].optionB,
                 optionC: req.body.quiz[quiz].optionC,
                 optionD: req.body.quiz[quiz].optionD,
+                optionE: req.body.quiz[quiz].optionE,
                 answerOption: req.body.quiz[quiz].answerOption,
                 answerDescription: req.body.quiz[quiz].answerDescription
               });

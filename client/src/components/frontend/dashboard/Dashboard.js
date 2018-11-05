@@ -21,31 +21,47 @@ class Dashboard extends Component {
     } else {
       // Check if logged user has profile data
       if (Object.keys(profile).length > 0) {
-        dashboardContent = (
-          <div>
-            <p>Welcome {user.name}</p>
-            <Link to="/profile-settings" className="btn btn-lg btn-info">
-              Go
-            </Link>
-          </div>
-        );
-      } else {
-        // User is logged in but has no profile
-        dashboardContent = (
-          <div>
-            <p>Welcome {user.name}</p>
-            <Link to="/profile-settings" className="btn btn-lg btn-info">
-              Go
-            </Link>
-          </div>
-        );
+        if (profile.coursesOwned.length > 0) {
+          dashboardContent = profile.coursesOwned.map(
+            (course, id) =>
+              course.title ? (
+                <div className="card" key={id}>
+                  <div className="card-body">
+                    <h5 className="card-title">{course.title}</h5>
+                    <p className="card-text">{course.description}</p>
+                  </div>
+
+                  <div className="card-footer d-flex justify-content-between">
+                    <Link
+                      to={`courses/${course.handle}`}
+                      className="btn btn-secondary"
+                    >
+                      Read More
+                    </Link>
+                  </div>
+                </div>
+              ) : (
+                ""
+              )
+          );
+        } else {
+          // User is logged in but has no courses owned
+          dashboardContent = (
+            <div>
+              <p>Welcome {user.name}</p>
+              <Link to="/profile-settings" className="btn btn-lg btn-info">
+                Go
+              </Link>
+            </div>
+          );
+        }
       }
     }
 
     return (
       <div className="dashboard">
         <div className="container">
-          <div className="row">
+          <div className="row my-4">
             <div className="col-md-12">
               <h1 className="display-4">Dashboard</h1>
               {dashboardContent}

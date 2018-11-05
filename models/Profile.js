@@ -7,9 +7,6 @@ const ProfileSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: "user"
   },
-  location: {
-    type: String
-  },
   coursesOwned: [
     {
       course: {

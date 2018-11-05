@@ -27,7 +27,23 @@ router.get(
           errors.noprofile = "There is no profile for this user";
           return res.status(404).json(errors);
         }
-        res.json(profile);
+
+        let num = 0;
+        let courses = new Array();
+
+        for (let i = 0; i < profile.coursesOwned.length; i++) {
+          let id = profile.coursesOwned[i].course;
+          Course.findById(id).then(course => {
+            if (course) {
+              profile.coursesOwned[i] = course;
+            }
+            num++;
+
+            if (num === profile.coursesOwned.length) {
+              res.json(profile);
+            }
+          });
+        }
       })
       .catch(err => res.status(404).json(err));
   }

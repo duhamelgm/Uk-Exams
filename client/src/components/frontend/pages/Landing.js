@@ -17,7 +17,7 @@ class Landing extends Component {
         <div className="card" key={id}>
           <div className="card-body">
             <h5 className="card-title">{course.title}</h5>
-            <p className="card-text">{course.description}</p>
+            <p className="card-text">{course.smalldescription}</p>
           </div>
 
           <div className="card-footer d-flex justify-content-between">
@@ -85,7 +85,7 @@ class Landing extends Component {
               <ul>
                 <li>
                   <div className="icon-circle">
-                    <i className="mdi mdi-comment-question-outline" />
+                    <i class="fas fa-question" />
                   </div>
 
                   <h5 className="text-white">
@@ -94,21 +94,21 @@ class Landing extends Component {
                 </li>
                 <li>
                   <div className="icon-circle">
-                    <i className="mdi mdi-note-outline" />
+                    <i class="far fa-sticky-note" />
                   </div>
 
                   <h5 className="text-white">Leader boards</h5>
                 </li>
                 <li>
                   <div className="icon-circle">
-                    <i className="mdi mdi-forum-outline" />
+                    <i class="fas fa-users" />
                   </div>
 
                   <h5 className="text-white">Discuss in study room</h5>
                 </li>
                 <li>
                   <div className="icon-circle">
-                    <i className="mdi mdi-checkbox-multiple-marked-outline" />
+                    <i class="fas fa-tasks" />
                   </div>
 
                   <h5 className="text-white">Revision notes</h5>

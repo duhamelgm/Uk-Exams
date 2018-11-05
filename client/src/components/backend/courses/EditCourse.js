@@ -18,6 +18,7 @@ class EditCourse extends Component {
     super();
     this.state = {
       title: "",
+      smalldescription: "",
       description: "",
       handle: "",
       plans: [
@@ -93,6 +94,44 @@ class EditCourse extends Component {
       /* Update state */
       console.log(data);
 
+      for (let i = 0; i < data.length; i++) {
+        let answer = data[i]["Right Answer"];
+        if (answer) {
+          data[i]["Right Answer"] = answer.toUpperCase();
+        }
+
+        delete Object.assign(data[i], {
+          ["answerOption"]: data[i]["Right Answer"]
+        })["Right Answer"];
+
+        delete Object.assign(data[i], {
+          ["question"]: data[i]["Question"]
+        })["Question"];
+
+        delete Object.assign(data[i], {
+          ["optionA"]: data[i]["Option A"]
+        })["Option A"];
+        delete Object.assign(data[i], {
+          ["optionB"]: data[i]["Option B"]
+        })["Option B"];
+        delete Object.assign(data[i], {
+          ["optionC"]: data[i]["Option C"]
+        })["Option C"];
+        delete Object.assign(data[i], {
+          ["optionD"]: data[i]["Option D"]
+        })["Option D"];
+        delete Object.assign(data[i], {
+          ["optionE"]: data[i]["Option E"]
+        })["Option E"];
+
+        delete Object.assign(data[i], {
+          ["answerDescription"]: data[i]["Description"]
+        })["Description"];
+        data[i].row = data[i].__rowNum__;
+      }
+
+      console.log(data);
+
       this.setState({ quiz: data });
     };
     reader.readAsBinaryString(f);
@@ -134,6 +173,7 @@ class EditCourse extends Component {
 
     const newCourse = {
       title: this.state.title,
+      smalldescription: this.state.smalldescription,
       description: this.state.description,
       handle: this.state.handle,
       plans: this.state.plans,
@@ -171,11 +211,11 @@ class EditCourse extends Component {
 
               <TextFieldGroup
                 type="textarea"
-                name="description"
+                name="smalldescription"
                 placeholder="Small description"
-                value={this.state.description}
+                value={this.state.smalldescription}
                 onChange={this.onChange}
-                error={errors.description}
+                error={errors.smalldescription}
                 info={
                   "A small description that will be displayed on the home page"
                 }
@@ -183,7 +223,7 @@ class EditCourse extends Component {
 
               <TextFieldGroup
                 type="textarea"
-                name="smalldescription"
+                name="description"
                 placeholder="Description"
                 value={this.state.description}
                 onChange={this.onChange}
@@ -277,7 +317,7 @@ class EditCourse extends Component {
                     <h5 className="mb-0">Add a quiz to the course</h5>
                   </div>
                   <div className="card-body">
-                    <CustomInput type="file" onChange={this.handleFileUpload} />
+                    <input type="file" onChange={this.handleFileUpload} />
                   </div>
                 </div>
               </div>

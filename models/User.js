@@ -15,6 +15,9 @@ const UserSchema = new Schema({
     type: String,
     required: true
   },
+  location: {
+    type: String
+  },
   range: {
     type: Number,
     default: 2

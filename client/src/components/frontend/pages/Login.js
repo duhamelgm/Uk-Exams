@@ -94,7 +94,7 @@ class Login extends Component {
               </div>
 
               <button className="btn btn-lg btn-secondary" type="submit">
-                Sign in
+                LOG IN
               </button>
             </form>
             <Link to="/resetpassword" className="forgot-password">

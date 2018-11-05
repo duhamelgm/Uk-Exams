@@ -9,6 +9,7 @@
     "jwt-decode": "^2.2.0",
     "node-sass": "^4.9.4",
     "react": "^16.6.0",
+    "react-country-region-selector": "^1.4.1",
     "react-dom": "^16.6.0",
     "react-redux": "^5.1.0",
     "react-router-dom": "^4.3.1",

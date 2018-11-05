@@ -28,7 +28,7 @@ class FrontendNavbar extends Component {
 
     this.toggle = this.toggle.bind(this);
     this.state = {
-      isOpen: true
+      isOpen: false
     };
   }
 
@@ -106,18 +106,16 @@ class FrontendNavbar extends Component {
         style={{ fontSize: "1.3rem" }}
       >
         <div className="container">
-          <NavbarBrand>
-            <Link to="/">
-              <img src={Logo} alt="Logo" />
-            </Link>
-          </NavbarBrand>
+          <Link to="/" className="navbar-brand">
+            <img src={Logo} alt="Logo" />
+          </Link>
 
           <Collapse isOpen={this.state.isOpen} navbar>
             <Nav className="mr-auto" navbar>
               <NavItem className="close-icon">
                 <button
                   type="button"
-                  class="close"
+                  className="close"
                   style={{ fontSize: "3rem" }}
                   onClick={this.toggle}
                 >
@@ -156,10 +154,10 @@ class FrontendNavbar extends Component {
 }
 
 Navbar.propTypes = {
-  logoutUser: PropTypes.func.isRequired,
-  clearCurrentProfile: PropTypes.func.isRequired,
-  profile: PropTypes.object.isRequired,
-  auth: PropTypes.object.isRequired
+  logoutUser: PropTypes.func,
+  clearCurrentProfile: PropTypes.func,
+  profile: PropTypes.object,
+  auth: PropTypes.object
 };
 
 const mapStateToProps = state => ({

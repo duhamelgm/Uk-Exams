@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import { FormGroup, Input } from "reactstrap";
 
 const TextFieldGroup = ({
+  formGroupClass,
   name,
   placeholder,
   value,
@@ -15,7 +16,7 @@ const TextFieldGroup = ({
   disabled
 }) => {
   return (
-    <FormGroup>
+    <FormGroup className={formGroupClass}>
       <Input
         type={type}
         name={name}

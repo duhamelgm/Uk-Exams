@@ -85,7 +85,7 @@ class Landing extends Component {
               <ul>
                 <li>
                   <div className="icon-circle">
-                    <i class="fas fa-question" />
+                    <i className="fas fa-question" />
                   </div>
 
                   <h5 className="text-white">
@@ -94,21 +94,21 @@ class Landing extends Component {
                 </li>
                 <li>
                   <div className="icon-circle">
-                    <i class="far fa-sticky-note" />
+                    <i className="far fa-sticky-note" />
                   </div>
 
                   <h5 className="text-white">Leader boards</h5>
                 </li>
                 <li>
                   <div className="icon-circle">
-                    <i class="fas fa-users" />
+                    <i className="fas fa-users" />
                   </div>
 
                   <h5 className="text-white">Discuss in study room</h5>
                 </li>
                 <li>
                   <div className="icon-circle">
-                    <i class="fas fa-tasks" />
+                    <i className="fas fa-tasks" />
                   </div>
 
                   <h5 className="text-white">Revision notes</h5>

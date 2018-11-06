@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { getCurrentProfile } from "../../../actions/profileActions";
 import Spinner from "../../common/Spinner";
 import { Link } from "react-router-dom";
+import { Card, CardDeck, CardBody, CardFooter } from "reactstrap";
 
 class Dashboard extends Component {
   componentDidMount() {
@@ -25,20 +26,22 @@ class Dashboard extends Component {
           dashboardContent = profile.coursesOwned.map(
             (course, id) =>
               course.title ? (
-                <div className="card" key={id}>
-                  <div className="card-body">
-                    <h5 className="card-title">{course.title}</h5>
-                    <p className="card-text">{course.description}</p>
-                  </div>
+                <div className="col-md-4 my-2" key={id}>
+                  <Card>
+                    <CardBody>
+                      <h5 className="card-title">{course.title}</h5>
+                      <p className="card-text">{course.smalldescription}</p>
+                    </CardBody>
 
-                  <div className="card-footer d-flex justify-content-between">
-                    <Link
-                      to={`courses/${course.handle}`}
-                      className="btn btn-secondary"
-                    >
-                      Read More
-                    </Link>
-                  </div>
+                    <CardFooter className="d-flex justify-content-between">
+                      <Link
+                        to={`courses/${course.handle}`}
+                        className="btn btn-secondary"
+                      >
+                        Read More
+                      </Link>
+                    </CardFooter>
+                  </Card>
                 </div>
               ) : (
                 ""
@@ -64,7 +67,7 @@ class Dashboard extends Component {
           <div className="row my-4">
             <div className="col-md-12">
               <h1 className="display-4">Dashboard</h1>
-              {dashboardContent}
+              <div className="row">{dashboardContent}</div>
             </div>
           </div>
         </div>

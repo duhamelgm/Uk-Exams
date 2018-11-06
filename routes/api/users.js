@@ -13,6 +13,8 @@ const validateLoginInput = require("../../validation/login");
 
 // Load user Model
 const User = require("../../models/User");
+// Load profile Model
+const Profile = require("../../models/Profile");
 
 // @route       POST api/users/register
 // @desc        Register user
@@ -44,6 +46,11 @@ router.post("/register", (req, res) => {
             newUser
               .save()
               .then(user => {
+                const profileFields = {};
+                profileFields.user = user.id;
+
+                new Profile(profileFields).save();
+
                 return res.status(200).json(newUser);
               })
               .catch(err => {

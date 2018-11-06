@@ -11,8 +11,6 @@ import {
 
 import * as XLSX from "xlsx";
 
-import { CustomInput, Form, FormGroup, Label, Input } from "reactstrap";
-
 class EditCourse extends Component {
   constructor() {
     super();
@@ -101,31 +99,31 @@ class EditCourse extends Component {
         }
 
         delete Object.assign(data[i], {
-          ["answerOption"]: data[i]["Right Answer"]
+          answerOption: data[i]["Right Answer"]
         })["Right Answer"];
 
         delete Object.assign(data[i], {
-          ["question"]: data[i]["Question"]
+          question: data[i]["Question"]
         })["Question"];
 
         delete Object.assign(data[i], {
-          ["optionA"]: data[i]["Option A"]
+          optionA: data[i]["Option A"]
         })["Option A"];
         delete Object.assign(data[i], {
-          ["optionB"]: data[i]["Option B"]
+          optionB: data[i]["Option B"]
         })["Option B"];
         delete Object.assign(data[i], {
-          ["optionC"]: data[i]["Option C"]
+          optionC: data[i]["Option C"]
         })["Option C"];
         delete Object.assign(data[i], {
-          ["optionD"]: data[i]["Option D"]
+          optionD: data[i]["Option D"]
         })["Option D"];
         delete Object.assign(data[i], {
-          ["optionE"]: data[i]["Option E"]
+          optionE: data[i]["Option E"]
         })["Option E"];
 
         delete Object.assign(data[i], {
-          ["answerDescription"]: data[i]["Description"]
+          answerDescription: data[i]["Description"]
         })["Description"];
         data[i].row = data[i].__rowNum__;
       }
@@ -192,7 +190,6 @@ class EditCourse extends Component {
     let planErrors = [];
 
     if (this.state.msg === "updated") {
-      console.log("hola");
       this.props.course.msg = "";
     }
 
@@ -236,6 +233,9 @@ class EditCourse extends Component {
                 value={this.state.handle}
                 onChange={this.onChange}
                 error={errors.handle}
+                info={
+                  'The title that will be displayed in the link, "www.uk-exams.com/courses/handleofthiscourse" '
+                }
               />
               <div className="form-group">
                 <div className="accordion">

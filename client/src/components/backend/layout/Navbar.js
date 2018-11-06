@@ -19,9 +19,6 @@ class Navbar extends Component {
         >
           <div className="navbar-brand">
             <img src={Logo} alt="Logo" />
-            <Link className="navbar-brand col-sm-3 col-md-2 mr-0" to=" ">
-              Company name
-            </Link>
           </div>
           <ul className="navbar-nav px-3">
             <li className="nav-item text-nowrap">

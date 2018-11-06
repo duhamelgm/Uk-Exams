@@ -4,11 +4,7 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { registerUser } from "../../../actions/authActions";
 import TextFieldGroup from "../../common/TextFieldGroup";
-import {
-  CountryDropdown,
-  RegionDropdown,
-  CountryRegionData
-} from "react-country-region-selector";
+import { CountryDropdown, RegionDropdown } from "react-country-region-selector";
 
 class Register extends Component {
   constructor() {
@@ -134,7 +130,7 @@ class Register extends Component {
               <div className="form-row">
                 <div className="form-group col-md-4">
                   <CountryDropdown
-                    class="custom-select custom-select-lg"
+                    className="custom-select custom-select-lg"
                     name="country"
                     value={this.state.country}
                     onChange={val => this.onChangeCountry(val)}
@@ -142,7 +138,7 @@ class Register extends Component {
                 </div>
                 <div className="form-group col-md-3">
                   <RegionDropdown
-                    class="custom-select custom-select-lg"
+                    className="custom-select custom-select-lg"
                     name="region"
                     country={this.state.country}
                     value={this.state.region}

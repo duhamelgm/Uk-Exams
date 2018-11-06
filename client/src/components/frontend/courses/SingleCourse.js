@@ -5,7 +5,7 @@ import {
   getCurrentProfile
 } from "../../../actions/profileActions";
 import { connect } from "react-redux";
-import { Link, Redirect } from "react-router-dom";
+import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import Spinner from "../../common/Spinner";
 
@@ -41,10 +41,7 @@ class SingleCourse extends Component {
       if (this.props.profile.profile.coursesOwned) {
         let { coursesOwned } = this.props.profile.profile;
 
-        coursesOwned.map((course, id) => {
-          console.log(`New iteration`);
-          console.log(course);
-          console.log(this.state.course);
+        coursesOwned.forEach(course => {
           if (
             course._id === this.state.course._id ||
             course.course === this.state.course._id
@@ -94,20 +91,24 @@ class SingleCourse extends Component {
             className="card"
             key={id}
             style={
-              plans.length == 1
+              plans.length === 1
                 ? { borderBottom: "1px solid rgba(0, 0, 0, 0.125)" }
                 : {}
             }
           >
             <div className="card-header">
-              <h4 className="card-title">{plan.title}</h4>
+              <h4 className="font-weight-normal">{plan.title}</h4>
             </div>
-            <div className="card-body d-flex justify-content-between align-items-center">
-              <p className="card-text my-0">
-                {plan.price}
-                &#163; each {plan.subscription}
-              </p>
-              <button className="btn btn-primary" onClick={this.buyCourse}>
+            <div className="card-body d-flex flex-column justify-content-between align-items-center">
+              <h2 className="card-title mb-4">
+                &#163; {plan.price}{" "}
+                <small className="text-muted">/ {plan.subscription}</small>
+              </h2>
+              <button
+                className="btn btn-primary"
+                onClick={this.buyCourse}
+                style={{ width: "6rem" }}
+              >
                 Buy
               </button>
             </div>
@@ -130,24 +131,6 @@ class SingleCourse extends Component {
 
             <div className="col-lg-4">
               <div className="accordion my-4">{plans}</div>
-
-              <div className="card my-4">
-                <h5 className="card-header">Search</h5>
-                <div className="card-body">
-                  <div className="input-group">
-                    <input
-                      type="text"
-                      className="form-control"
-                      placeholder="Search for..."
-                    />
-                    <span className="input-group-btn">
-                      <button className="btn btn-secondary" type="button">
-                        Go!
-                      </button>
-                    </span>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
         </div>

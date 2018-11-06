@@ -31,7 +31,6 @@ class Quiz extends Component {
     let answers = this.state.answers;
 
     answers[current] = e.target.value;
-    console.log(answers);
 
     this.setState({
       answers: answers
@@ -213,7 +212,6 @@ class Quiz extends Component {
         );
       } else if (currentQuestion === 5) {
         let results = this.getResults();
-        console.log(results);
         quiz = (
           <div className="results">
             <div>

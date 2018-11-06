@@ -16,7 +16,7 @@ class Courses extends Component {
     if (courses) {
       coursesList = courses.map((course, id) => (
         <tr key={id}>
-          <td>{id}</td>
+          <td>{id + 1}</td>
           <td>{course.title}</td>
           <td>{course.handle}</td>
           <td>

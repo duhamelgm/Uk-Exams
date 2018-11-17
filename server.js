@@ -3,11 +3,13 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const passport = require("passport");
 const path = require("path");
+const paypal = require("paypal-rest-sdk");
 
 const users = require("./routes/api/users");
 const profiles = require("./routes/api/profiles");
 const courses = require("./routes/api/courses");
 const quiz = require("./routes/api/quiz");
+const keys = require("./config/keys");
 
 const app = express();
 
@@ -16,7 +18,7 @@ app.use(bodyParser.urlencoded({ limit: "5mb", extended: true }));
 app.use(bodyParser.json({ limit: "5mb" }));
 
 // DB Config
-const db = require("./config/keys").mongoURI;
+const db = keys.mongoURI;
 mongoose.set("useFindAndModify", false);
 
 // Connect to DB
@@ -35,6 +37,13 @@ app.use(passport.initialize());
 // Passport config
 
 require("./config/passport")(passport);
+
+// Paypal config
+paypal.configure({
+  mode: keys.mode,
+  client_id: keys.client_id,
+  client_secret: keys.client_secret
+});
 
 // Use Routes
 app.use("/api/users", users);

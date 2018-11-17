@@ -7,14 +7,45 @@ const ProfileSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: "user"
   },
-  location: {
-    type: String
+  firstname: {
+    type: String,
+    required: true
+  },
+  lastname: {
+    type: String,
+    required: true
+  },
+  address: {
+    type: String,
+    required: true
+  },
+  country: {
+    type: String,
+    required: true
+  },
+  state: {
+    type: String,
+    required: true
+  },
+  city: {
+    type: String,
+    required: true
+  },
+  zip: {
+    type: String,
+    required: true
   },
   coursesOwned: [
     {
       course: {
         type: Schema.Types.ObjectId,
         ref: "courses"
+      },
+      paymentToken: {
+        type: String
+      },
+      billingAgreement: {
+        type: String
       }
     }
   ],

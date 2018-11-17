@@ -17,7 +17,10 @@ export const GET_COURSES = "GET_COURSES";
 export const GET_COURSE = "GET_COURSE";
 export const ADD_COURSE = "ADD_COURSE";
 export const UPDATE_COURSE = "UPDATE_COURSE";
-export const RESET_MSG = "RESET_MSG";
+export const BUY_COURSE_SUBSCRIPTION = "BUY_COURSE_SUBSCRIPTION";
+export const GET_EXAM_INFO = "GET_EXAM_INFO";
+export const GET_EXAM_QUESTIONS = "GET_EXAM_QUESTIONS";
 
-// Quiz
-export const GET_QUIZ = "GET_QUIZ";
+// Notifications
+export const ADD_MSG = "ADD_MSG";
+export const RESET_MSG = "RESET_MSG";

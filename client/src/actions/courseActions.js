@@ -8,7 +8,9 @@ import {
   GET_COURSES,
   ADD_COURSE,
   COURSES_LOADING,
-  RESET_MSG
+  GET_EXAM_INFO,
+  BUY_COURSE_SUBSCRIPTION,
+  GET_EXAM_QUESTIONS
 } from "./types";
 
 axiosDefaults.baseURL = "/";
@@ -67,6 +69,69 @@ export const getCourse = handle => dispatch => {
     });
 };
 
+// Buy subscription course
+export const buyCourseSubscription = (handle, data) => dispatch => {
+  axios
+    .post(`api/courses/${handle}/buy`, data)
+    .then(res => {
+      window.location.href = res.data.url;
+    })
+    .catch(err => {
+      dispatch({
+        type: BUY_COURSE_SUBSCRIPTION,
+        payload: {}
+      });
+    });
+};
+
+//
+//    EXAM ACTIONS
+//
+
+// Get exam info
+export const getExamInfo = handleCourse => dispatch => {
+  dispatch(setCourseLoading());
+
+  axios
+    .get(`api/courses/${handleCourse}/exam/info`)
+    .then(res => {
+      dispatch({
+        type: GET_EXAM_INFO,
+        payload: res.data
+      });
+    })
+    .catch(err => {
+      dispatch({
+        type: GET_ERRORS,
+        payload: {}
+      });
+    });
+};
+
+// Get exam questions
+export const getExamQuestions = (handleCourse, examRequest) => dispatch => {
+  dispatch(setCourseLoading());
+
+  axios
+    .post(`api/courses/${handleCourse}/exam/questions`, examRequest)
+    .then(res => {
+      dispatch({
+        type: GET_EXAM_QUESTIONS,
+        payload: res.data
+      });
+    })
+    .catch(err => {
+      dispatch({
+        type: GET_ERRORS,
+        payload: {}
+      });
+    });
+};
+
+//
+//    ADMIN ACTIONS
+//
+
 // Add course
 export const addCourse = course => dispatch => {
   dispatch(setCourseLoading());
@@ -109,13 +174,9 @@ export const updateCourse = (course, handle) => dispatch => {
     });
 };
 
-// Course loading
-export const resetMsg = callback => dispatch => {
-  dispatch({
-    type: RESET_MSG
-  });
-  callback();
-};
+//
+//    UTILS ACTIONS
+//
 
 // Course loading
 export const setCourseLoading = () => {

@@ -2,13 +2,22 @@ import axios from "axios";
 import setAuthToken from "../utils/setAuthToken";
 import jwt_decode from "jwt-decode";
 
-import { GET_ERRORS, SET_CURRENT_USER } from "./types";
+import { GET_ERRORS, SET_CURRENT_USER, ADD_MSG } from "./types";
 
 // Register user
 export const registerUser = (userData, history) => dispatch => {
   axios
     .post("/api/users/register", userData)
-    .then(res => history.push("/login"))
+    .then(res => {
+      dispatch({
+        type: ADD_MSG,
+        payload: {
+          state: "success",
+          msg: "Your account has been successfully created"
+        }
+      });
+      history.push("/login");
+    })
     .catch(err => {
       dispatch({
         type: GET_ERRORS,

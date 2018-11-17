@@ -21,7 +21,7 @@ router.get(
   (req, res) => {
     const errors = {};
 
-    Profile.findOne({ user: req.user.id })
+    Profile.findOne({ user: req.user._id })
       .then(profile => {
         if (isEmpty(profile)) {
           errors.noprofile = "There is no profile for this user";
@@ -31,18 +31,22 @@ router.get(
         let num = 0;
         let courses = new Array();
 
-        for (let i = 0; i < profile.coursesOwned.length; i++) {
-          let id = profile.coursesOwned[i].course;
-          Course.findById(id).then(course => {
-            if (course) {
-              profile.coursesOwned[i] = course;
-            }
-            num++;
+        if (profile.coursesOwned.length > 0) {
+          for (let i = 0; i < profile.coursesOwned.length; i++) {
+            let id = profile.coursesOwned[i].course;
+            Course.findById(id).then(course => {
+              if (course) {
+                profile.coursesOwned[i] = course;
+              }
+              num++;
 
-            if (num === profile.coursesOwned.length) {
-              res.json(profile);
-            }
-          });
+              if (num === profile.coursesOwned.length) {
+                res.json(profile);
+              }
+            });
+          }
+        } else {
+          res.json(profile);
         }
       })
       .catch(err => res.status(404).json(err));
@@ -85,55 +89,58 @@ router.post(
   }
 );
 
-// @route       POST api/profiles/add-course/handle
-// @desc        Add course to profile
-// @acces       Private
-router.post(
-  "/add-course/:handle",
-  passport.authenticate("jwt", { session: false }),
-  (req, res) => {
-    let profileFields = {};
+// @route       GET api/profiles/course-buy/handle/profileId
+// @desc        Return url after buying a course
+// @acces       Public
+router.get("/course-buy/:handle/:profileId", (req, res) => {
+  let profileFields = {};
+  console.log("Hay algo");
 
-    // Find profile for that user
-    Profile.findOne({ user: req.user.id })
-      .then(profile => {
-        // Find the course
-        Course.findOne({ handle: req.params.handle }).then(course => {
-          //If course not exist return 404
-          if (!course) res.json(404);
+  // Find profile for that user
+  Profile.findById(req.params.profileId)
+    .then(profile => {
+      // Find the course
+      Course.findOne({ handle: req.params.handle }).then(course => {
+        //If course not exist return 404
+        if (!course) res.json(404);
 
-          if (!isEmpty(profile)) {
-            profileFields = profile;
-            profileFields.coursesOwned.push({
-              course: course._id
-            });
-
-            // Update
-            Profile.findOneAndUpdate(
-              { user: req.user.id },
-              { $set: profile },
-              { new: true }
-            )
-              .then(profile => res.json(profile))
-              .catch(err => console.log(err));
-          } else {
-            // Create
-
-            // Get user id
-            profileFields.user = req.user.id;
-            profileFields.coursesOwned.push({
-              course: course._id
-            });
-
-            // Save Profile
-            new Profile(profileFields)
-              .save()
-              .then(profile => res.json(profile));
-          }
+        // Get the token for the payment
+        let url = req.protocol + "://" + req.get("host") + req.originalUrl;
+        let hashes = url.slice(url.indexOf("?") + 1).split("&");
+        let params = {};
+        hashes.map(hash => {
+          let [key, val] = hash.split("=");
+          params[key] = decodeURIComponent(val);
         });
-      })
-      .catch(err => res.status(404).json(err));
-  }
-);
+
+        // Search for the payment token in the profile
+        profileFields = profile;
+        let finded = false;
+
+        for (let i = 0; i < profileFields.coursesOwned.length; i++) {
+          if (profileFields.coursesOwned[i].paymentToken === params.token) {
+            profileFields.coursesOwned[i].course = course._id;
+            finded = true;
+          }
+        }
+
+        if (finded) {
+          // Add course to the profile
+          Profile.findByIdAndUpdate(
+            req.params.profileId,
+            { $set: profileFields },
+            { new: true }
+          )
+            .then(profile =>
+              res.redirect(req.protocol + "://" + "localhost:3000")
+            )
+            .catch(err => console.log(err));
+        } else {
+          return res.redirect(req.protocol + "://" + "localhost:3000");
+        }
+      });
+    })
+    .catch(err => res.status(404).json(err));
+});
 
 module.exports = router;

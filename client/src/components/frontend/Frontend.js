@@ -12,7 +12,8 @@ import Register from "./pages/Register";
 import Dashboard from "./dashboard/Dashboard";
 import ProfileSettings from "./dashboard/ProfileSettings";
 import SingleCourse from "./courses/SingleCourse";
-import Quiz from "./courses/Quiz";
+import Exam from "./courses/Exam";
+import Checkout from "./courses/Checkout";
 
 export default class Frontend extends Component {
   render() {
@@ -35,7 +36,12 @@ export default class Frontend extends Component {
               />
             </Switch>
             <Route exact path="/courses/:handle" component={SingleCourse} />
-            <Route exact path="/courses/:handle/quiz" component={Quiz} />
+            <Route
+              exact
+              path="/courses/:handle/checkout/:planID"
+              component={Checkout}
+            />
+            <Route exact path="/courses/:handle/exam" component={Exam} />
             <Footer />
           </div>
         </Router>

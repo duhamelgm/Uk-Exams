@@ -3,8 +3,11 @@ import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { loginUser } from "../../../actions/authActions";
+import { resetMsg } from "../../../actions/notificationActions";
 
 import TextFieldGroup from "../../common/TextFieldGroup";
+
+import { Alert } from "reactstrap";
 
 class Login extends Component {
   constructor() {
@@ -12,13 +15,18 @@ class Login extends Component {
     this.state = {
       email: "",
       password: "",
-      errors: {}
+      errors: {},
+      alertVisible: false,
+      alertMsg: {}
     };
   }
 
   componentDidMount() {
     if (this.props.auth.isAuthenticated) {
       this.props.history.push("/dashboard");
+    }
+    if (Object.keys(this.props.notification).length > 0) {
+      this.setState({ alertVisible: true, alertMsg: this.props.notification });
     }
   }
 
@@ -31,6 +39,11 @@ class Login extends Component {
       this.setState({ errors: this.props.errors });
     }
   }
+
+  onDismiss = () => {
+    this.setState({ alertVisible: false });
+    this.props.resetMsg();
+  };
 
   onChange = e => {
     this.setState({ [e.target.name]: e.target.value });
@@ -52,6 +65,13 @@ class Login extends Component {
 
     return (
       <div className="container my-4">
+        <Alert
+          color={this.state.alertMsg.state}
+          isOpen={this.state.alertVisible}
+          toggle={this.onDismiss}
+        >
+          {this.state.alertMsg.msg}
+        </Alert>
         <div className="card" style={{ margin: "auto", maxWidth: "25rem" }}>
           <div
             className="card-img-top my-4"
@@ -109,16 +129,19 @@ class Login extends Component {
 
 Login.propTypes = {
   loginUser: PropTypes.func.isRequired,
+  resetMsg: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
+  notification: PropTypes.object.isRequired,
   errors: PropTypes.object.isRequired
 };
 
 const mapStateToProps = state => ({
   auth: state.auth,
+  notification: state.notification,
   errors: state.errors
 });
 
 export default connect(
   mapStateToProps,
-  { loginUser }
+  { loginUser, resetMsg }
 )(Login);

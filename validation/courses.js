@@ -43,9 +43,10 @@ module.exports = function validateCourseInput(data) {
     errors.handle = "Handle field is required";
   }
 
-  if (Array.isArray(data.quiz)) {
-    for (let i = 0; i < data.quiz.length; i++) {
-      let question = data.quiz[i];
+  /*
+  if (Array.isArray(data.categories)) {
+    for (let i = 0; i < data.categories.length; i++) {
+      let question = data.categories[i];
       if (isEmpty(question)) {
         errors.quiz = "All the rows of the quiz needs information";
       } else {
@@ -94,8 +95,8 @@ module.exports = function validateCourseInput(data) {
       }
     }
   } else {
-    errors.quiz = "Quiz is required";
-  }
+    errors.categories = "At least one category is required";
+  }*/
 
   if (Array.isArray(data.plans)) {
     if (data.plans.length > 0) {
@@ -103,15 +104,15 @@ module.exports = function validateCourseInput(data) {
         let current = data.plans[plan];
 
         current.title = !isEmpty(current.title) ? current.title : "";
-        current.subscription = !isEmpty(current.subscription)
-          ? current.subscription
+        current.frequency = !isEmpty(current.frequency)
+          ? current.frequency
           : "";
         current.price = !isEmpty(current.price) ? current.price : "";
 
         if (Validator.isEmpty(current.title)) {
           errors.plans = [];
           errors.plans[plan] = {};
-        } else if (Validator.isEmpty(current.subscription)) {
+        } else if (Validator.isEmpty(current.frequency)) {
           errors.plans = [];
           errors.plans[plan] = {};
         } else if (Validator.isEmpty(current.price)) {
@@ -122,8 +123,8 @@ module.exports = function validateCourseInput(data) {
         if (Validator.isEmpty(current.title)) {
           errors.plans[plan].title = "Title is required";
         }
-        if (Validator.isEmpty(current.subscription)) {
-          errors.plans[plan].subscription = "Subscription is required";
+        if (Validator.isEmpty(current.frequency)) {
+          errors.plans[plan].frequency = "Frequency is required";
         }
         if (Validator.isEmpty(current.price)) {
           errors.plans[plan].price = "Price is required";

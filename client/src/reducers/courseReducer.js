@@ -4,27 +4,36 @@ import {
   UPDATE_COURSE,
   ADD_COURSE,
   COURSES_LOADING,
-  RESET_MSG
+  BUY_COURSE_SUBSCRIPTION,
+  GET_EXAM_INFO,
+  GET_EXAM_QUESTIONS
 } from "../actions/types";
 
 const intialState = {
   courses: [],
   course: {},
-  loading: false,
-  msg: ""
+  info: [],
+  exam: [],
+  loading: false
 };
 
 export default function(state = intialState, action) {
   switch (action.type) {
-    case RESET_MSG:
+    case GET_EXAM_QUESTIONS:
       return {
         ...state,
-        msg: ""
+        exam: action.payload,
+        loading: false
       };
-    case COURSES_LOADING:
+    case GET_EXAM_INFO:
       return {
         ...state,
-        loading: true
+        info: action.payload,
+        loading: false
+      };
+    case BUY_COURSE_SUBSCRIPTION:
+      return {
+        ...state
       };
     case ADD_COURSE:
       return {
@@ -51,6 +60,11 @@ export default function(state = intialState, action) {
         ...state,
         course: action.payload,
         loading: false
+      };
+    case COURSES_LOADING:
+      return {
+        ...state,
+        loading: true
       };
     default:
       return state;

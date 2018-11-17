@@ -1,5 +1,8 @@
 import React, { Component } from "react";
-import { getCourse } from "../../../actions/courseActions";
+import {
+  getCourse,
+  buyCourseSubscription
+} from "../../../actions/courseActions";
 import {
   addCourseToProfile,
   getCurrentProfile
@@ -55,9 +58,9 @@ class SingleCourse extends Component {
     return val;
   };
 
-  buyCourse = () => {
+  buyCourse = plan => {
     if (this.props.auth.isAuthenticated) {
-      this.props.addCourseToProfile(this.props.match.params.handle);
+      this.props.buyCourseSubscription(this.props.match.params.handle, plan);
     } else {
       alert("Log in to buy a course");
     }
@@ -78,7 +81,7 @@ class SingleCourse extends Component {
             <div className="card-body">
               <Link
                 className="btn btn-primary"
-                to={`${this.state.course.handle}/quiz`}
+                to={`${this.state.course.handle}/exam`}
               >
                 Go
               </Link>
@@ -104,13 +107,15 @@ class SingleCourse extends Component {
                 &#163; {plan.price}{" "}
                 <small className="text-muted">/ {plan.subscription}</small>
               </h2>
-              <button
+              <Link
                 className="btn btn-primary"
-                onClick={this.buyCourse}
+                to={{
+                  pathname: `/courses/${course.handle}/checkout/${plan._id}`
+                }}
                 style={{ width: "6rem" }}
               >
                 Buy
-              </button>
+              </Link>
             </div>
           </div>
         ));
@@ -145,7 +150,7 @@ class SingleCourse extends Component {
 
 SingleCourse.propTypes = {
   getCourse: PropTypes.func.isRequired,
-  addCourseToProfile: PropTypes.func.isRequired,
+  buyCourseSubscription: PropTypes.func.isRequired,
   getCurrentProfile: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
   profile: PropTypes.object.isRequired,
@@ -160,5 +165,5 @@ const mapStateToProptypes = state => ({
 
 export default connect(
   mapStateToProptypes,
-  { getCourse, addCourseToProfile, getCurrentProfile }
+  { getCourse, buyCourseSubscription, getCurrentProfile }
 )(SingleCourse);

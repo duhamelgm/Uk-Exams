@@ -73,6 +73,12 @@ img {
   margin-bottom: 1rem;
 }
 
+.cursor-pointer {
+  &:hover {
+    cursor: pointer;
+  }
+}
+
 a {
   color: #000;
   transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,

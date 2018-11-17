@@ -1,6 +1,7 @@
 import React from "react";
 import { Card, CardBody, CardHeader, Collapse, Button } from "reactstrap";
 import PropTypes from "prop-types";
+import classnames from "classnames";
 
 export class Accordion extends React.Component {
   state = {
@@ -46,13 +47,33 @@ const AccordionItem = ({ children, isOpen, onClick }) => (
   </Card>
 );
 
-const AccordionHeader = ({ children, onClick }) => (
-  <CardHeader>
-    <Button color="link" onClick={onClick} style={{ whiteSpace: "normal" }}>
-      <h5 className="card-title mb-0">{children}</h5>
-    </Button>
-  </CardHeader>
-);
+const AccordionHeader = ({ children, onClick, className, removeCategory }) => {
+  let clases = className ? className : "";
+  let contentClass = {};
+
+  contentClass[className] = clases;
+
+  return (
+    <CardHeader className="d-flex justify-content-between">
+      <Button
+        color="link"
+        onClick={onClick}
+        style={{ width: "100%", textDecoration: "none" }}
+      >
+        <h5 className={classnames("card-title mb-0", contentClass)}>
+          {children}
+        </h5>
+      </Button>
+      {removeCategory ? (
+        <button type="button" className="close" onClick={removeCategory}>
+          <span aria-hidden="true">&times;</span>
+        </button>
+      ) : (
+        ""
+      )}
+    </CardHeader>
+  );
+};
 
 const AccordionBody = ({ children, isOpen }) => (
   <Collapse isOpen={isOpen}>

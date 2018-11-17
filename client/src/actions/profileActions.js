@@ -50,9 +50,9 @@ export const updateProfile = userProfile => dispatch => {
 };
 
 // Add course to profile
-export const addCourseToProfile = handle => dispatch => {
+export const addCourseToProfile = (handle, plan) => dispatch => {
   axios
-    .post(`api/profiles/add-course/${handle}`)
+    .post(`api/profiles/add-course/${handle}`, plan)
     .then(res => {
       dispatch({
         type: ADD_COURSE_TO_PROFILE,

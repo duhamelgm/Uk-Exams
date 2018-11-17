@@ -5,16 +5,32 @@ import PropTypes from "prop-types";
 import {
   updateCourse,
   getCourse,
-  addCourse,
-  resetMsg
+  addCourse
 } from "../../../actions/courseActions";
-
+import classnames from "classnames";
 import * as XLSX from "xlsx";
+
+import CourseInfo from "./EditCourseComponents/CourseInfo";
+import CoursePlans from "./EditCourseComponents/CoursePlans";
+import CourseCategories from "./EditCourseComponents/CourseCategories";
+
+import {
+  TabContent,
+  TabPane,
+  Nav,
+  NavItem,
+  NavLink,
+  Container,
+  Row,
+  Col
+} from "reactstrap";
+import { Accordion } from "../../common/Accordion";
 
 class EditCourse extends Component {
   constructor() {
     super();
     this.state = {
+      activeTab: "1",
       title: "",
       smalldescription: "",
       description: "",
@@ -22,11 +38,18 @@ class EditCourse extends Component {
       plans: [
         {
           title: "",
-          subscription: "",
+          frequency: "",
+          interval: "",
           price: ""
         }
       ],
-      quiz: [{}],
+      categories: [
+        {
+          title: "",
+          category: "",
+          questions: [{}]
+        }
+      ],
       msg: "",
       errors: {}
     };
@@ -44,7 +67,8 @@ class EditCourse extends Component {
         let newPlans = this.props.course.course.plans.map(plan => {
           return {
             title: plan.title,
-            subscription: plan.subscription,
+            frequency: plan.frequency,
+            interval: plan.interval,
             price: plan.price
           };
         });
@@ -56,17 +80,6 @@ class EditCourse extends Component {
           plans: newPlans
         });
       }
-
-      if (this.props.course.msg === "updated") {
-        this.props.resetMsg(() => {
-          alert("The course was successfully updated");
-        });
-      } else if (this.props.course.msg === "created") {
-        this.props.resetMsg(() => {
-          alert("The course was successfully created");
-          this.props.history.push("/courses");
-        });
-      }
     }
 
     if (this.props.errors !== prevProps.errors) {
@@ -76,90 +89,135 @@ class EditCourse extends Component {
     }
   }
 
-  handleFileUpload = e => {
+  handleFileUpload = id => e => {
     const f = e.target.files[0];
+    const ext = f.name.slice(((f.name.lastIndexOf(".") - 1) >>> 0) + 2);
 
-    const reader = new FileReader();
-    reader.onload = evt => {
-      /* Parse data */
-      const bstr = evt.target.result;
-      const wb = XLSX.read(bstr, { type: "binary" });
-      /* Get first worksheet */
-      const wsname = wb.SheetNames[0];
-      const ws = wb.Sheets[wsname];
-      /* Convert array of arrays */
-      const data = XLSX.utils.sheet_to_json(ws, {});
-      /* Update state */
-      console.log(data);
+    console.log(ext);
 
-      for (let i = 0; i < data.length; i++) {
-        let answer = data[i]["Right Answer"];
-        if (answer) {
-          data[i]["Right Answer"] = answer.toUpperCase();
+    if (ext !== "xlsx") {
+    } else {
+      const reader = new FileReader();
+      reader.onload = evt => {
+        /* Parse data */
+        const bstr = evt.target.result;
+        const wb = XLSX.read(bstr, { type: "binary" });
+        /* Get first worksheet */
+        const wsname = wb.SheetNames[0];
+        const ws = wb.Sheets[wsname];
+        /* Convert array of arrays */
+        const data = XLSX.utils.sheet_to_json(ws, {});
+        /* Update state */
+
+        for (let i = 0; i < data.length; i++) {
+          let answer = data[i]["Right Answer"];
+          if (answer) {
+            data[i]["Right Answer"] = answer.toUpperCase();
+          }
+
+          delete Object.assign(data[i], {
+            answerOption: data[i]["Right Answer"]
+          })["Right Answer"];
+
+          delete Object.assign(data[i], {
+            question: data[i]["Question"]
+          })["Question"];
+
+          delete Object.assign(data[i], {
+            optionA: data[i]["Option A"]
+          })["Option A"];
+          delete Object.assign(data[i], {
+            optionB: data[i]["Option B"]
+          })["Option B"];
+          delete Object.assign(data[i], {
+            optionC: data[i]["Option C"]
+          })["Option C"];
+          delete Object.assign(data[i], {
+            optionD: data[i]["Option D"]
+          })["Option D"];
+          delete Object.assign(data[i], {
+            optionE: data[i]["Option E"]
+          })["Option E"];
+
+          delete Object.assign(data[i], {
+            answerDescription: data[i]["Description"]
+          })["Description"];
+          data[i].row = data[i].__rowNum__;
         }
 
-        delete Object.assign(data[i], {
-          answerOption: data[i]["Right Answer"]
-        })["Right Answer"];
+        const newCategory = this.state.categories.map((category, idx) => {
+          if (id !== idx) return category;
+          return { ...category, questions: data };
+        });
 
-        delete Object.assign(data[i], {
-          question: data[i]["Question"]
-        })["Question"];
-
-        delete Object.assign(data[i], {
-          optionA: data[i]["Option A"]
-        })["Option A"];
-        delete Object.assign(data[i], {
-          optionB: data[i]["Option B"]
-        })["Option B"];
-        delete Object.assign(data[i], {
-          optionC: data[i]["Option C"]
-        })["Option C"];
-        delete Object.assign(data[i], {
-          optionD: data[i]["Option D"]
-        })["Option D"];
-        delete Object.assign(data[i], {
-          optionE: data[i]["Option E"]
-        })["Option E"];
-
-        delete Object.assign(data[i], {
-          answerDescription: data[i]["Description"]
-        })["Description"];
-        data[i].row = data[i].__rowNum__;
-      }
-
-      console.log(data);
-
-      this.setState({ quiz: data });
-    };
-    reader.readAsBinaryString(f);
+        this.setState({
+          categories: newCategory
+        });
+      };
+      reader.readAsBinaryString(f);
+    }
   };
 
-  addSubscription = e => {
+  toggle = tab => {
+    if (this.state.activeTab !== tab) {
+      this.setState({
+        activeTab: tab
+      });
+    }
+  };
+
+  addToArray = target => e => {
     this.setState({
-      plans: this.state.plans.concat([
-        {
-          title: "",
-          subscription: "",
-          price: ""
-        }
-      ])
+      plans:
+        target === "plans"
+          ? this.state.plans.concat([
+              {
+                title: "",
+                frequency: "",
+                interval: "",
+                price: ""
+              }
+            ])
+          : this.state.plans,
+      categories:
+        target === "categories"
+          ? this.state.categories.concat([
+              {
+                title: "",
+                category: "",
+                questions: [{}]
+              }
+            ])
+          : this.state.categories
     });
   };
 
-  removeSubscription = id => () => {
+  removeFromArray = (id, target) => e => {
     this.setState({
-      plans: this.state.plans.filter((s, sid) => id !== sid)
+      plans: this.state.plans.filter(
+        (s, sid) => id !== sid || target !== "plans"
+      ),
+      categories: this.state.categories.filter(
+        (s, sid) => id !== sid || target !== "categories"
+      )
     });
   };
 
-  onChangePlan = id => e => {
+  onChangeArray = (id, target) => e => {
     const newPlans = this.state.plans.map((plan, idx) => {
-      if (id !== idx) return plan;
+      if (id !== idx || target !== "plans") return plan;
       return { ...plan, [e.target.name]: e.target.value };
     });
 
-    this.setState({ plans: newPlans });
+    const newCategories = this.state.categories.map((category, idx) => {
+      if (id !== idx || target !== "categories") return category;
+      return { ...category, [e.target.name]: e.target.value };
+    });
+
+    this.setState({
+      plans: newPlans,
+      categories: newCategories
+    });
   };
 
   onChange = e => {
@@ -175,7 +233,7 @@ class EditCourse extends Component {
       description: this.state.description,
       handle: this.state.handle,
       plans: this.state.plans,
-      quiz: this.state.quiz
+      categories: this.state.categories
     };
 
     if (this.props.match.params.handle) {
@@ -187,148 +245,93 @@ class EditCourse extends Component {
 
   render() {
     const { errors } = this.state;
-    let planErrors = [];
-
-    if (this.state.msg === "updated") {
-      this.props.course.msg = "";
-    }
 
     return (
-      <div className="container my-4">
-        <div className="row">
-          <div className="col-lg-8">
-            <form onSubmit={this.onSubmit}>
-              <TextFieldGroup
-                name="title"
-                placeholder="Title of the course"
-                value={this.state.title}
-                onChange={this.onChange}
-                error={errors.title}
-              />
-
-              <TextFieldGroup
-                type="textarea"
-                name="smalldescription"
-                placeholder="Small description"
-                value={this.state.smalldescription}
-                onChange={this.onChange}
-                error={errors.smalldescription}
-                info={
-                  "A small description that will be displayed on the home page"
-                }
-              />
-
-              <TextFieldGroup
-                type="textarea"
-                name="description"
-                placeholder="Description"
-                value={this.state.description}
-                onChange={this.onChange}
-                error={errors.description}
-              />
-
-              <TextFieldGroup
-                name="handle"
-                placeholder="Handle of the course"
-                value={this.state.handle}
-                onChange={this.onChange}
-                error={errors.handle}
-                info={
-                  'The title that will be displayed in the link, "www.uk-exams.com/courses/handleofthiscourse" '
-                }
-              />
-              <div className="form-group">
-                <div className="accordion">
-                  {this.state.plans.map((plan, id) => {
-                    planErrors.push({});
-                    if (Array.isArray(errors.plans)) {
-                      if (
-                        errors.plans.length >= id &&
-                        errors.plans[id] !== undefined
-                      ) {
-                        planErrors[id] = errors.plans[id];
-                      }
-                    }
-
-                    return (
-                      <div className="card" key={id}>
-                        <div className="card-header d-flex justify-content-between">
-                          <h5 className="mb-0">
-                            {plan.title ? plan.title : "New plan"}
-                          </h5>
-                          <button
-                            type="button"
-                            className="close"
-                            onClick={this.removeSubscription(id)}
-                          >
-                            <span aria-hidden="true">&times;</span>
-                          </button>
-                        </div>
-                        <div className="collapse show">
-                          <div className="card-body">
-                            <TextFieldGroup
-                              name="title"
-                              placeholder="Title of this plan"
-                              value={plan.title}
-                              onChange={this.onChangePlan(id)}
-                              error={planErrors[id].title}
-                            />
-
-                            <TextFieldGroup
-                              name="subscription"
-                              placeholder="Type of subscription"
-                              value={plan.subscription}
-                              onChange={this.onChangePlan(id)}
-                              error={planErrors[id].subscription}
-                            />
-
-                            <TextFieldGroup
-                              name="price"
-                              placeholder="Price of this plan"
-                              value={plan.price}
-                              onChange={this.onChangePlan(id)}
-                              error={planErrors[id].price}
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    );
+      <Container className="my-4">
+        <Row>
+          <Col lg="8">
+            <Nav tabs>
+              <NavItem>
+                <NavLink
+                  className={classnames({
+                    active: this.state.activeTab === "1"
                   })}
-
-                  <div className="card">
-                    <div className="card-header d-flex justify-content-center align-items-center flex-column">
-                      <h5 className="text-danger">{errors.plan}</h5>
-                      <button
-                        className="btn btn-info"
-                        onClick={this.addSubscription}
-                        type="button"
-                      >
-                        Add new Subscription plan
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="form-group">
-                <div className="card">
-                  <div className="card-header">
-                    <h5 className="text-danger">{errors.quiz}</h5>
-                    <h5 className="mb-0">Add a quiz to the course</h5>
-                  </div>
-                  <div className="card-body">
-                    <input type="file" onChange={this.handleFileUpload} />
-                  </div>
-                </div>
-              </div>
+                  onClick={() => {
+                    this.toggle("1");
+                  }}
+                  className="cursor-pointer"
+                >
+                  Info
+                </NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink
+                  className={classnames({
+                    active: this.state.activeTab === "2"
+                  })}
+                  onClick={() => {
+                    this.toggle("2");
+                  }}
+                  className="cursor-pointer"
+                >
+                  Subscription plans
+                </NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink
+                  className={classnames({
+                    active: this.state.activeTab === "3"
+                  })}
+                  onClick={() => {
+                    this.toggle("3");
+                  }}
+                  className="cursor-pointer"
+                >
+                  Questions categories
+                </NavLink>
+              </NavItem>
+            </Nav>
+            <form onSubmit={this.onSubmit}>
+              <TabContent activeTab={this.state.activeTab} className="my-4">
+                <TabPane tabId="1">
+                  <CourseInfo
+                    state={this.state}
+                    onChange={this.onChange}
+                    errors={errors}
+                  />
+                </TabPane>
+                <TabPane tabId="2">
+                  <CoursePlans
+                    state={this.state}
+                    errors={errors}
+                    onChangePlan={id => this.onChangeArray(id, "plans")}
+                    removeSubscription={id => this.removeFromArray(id, "plans")}
+                    addSubscription={this.addToArray("plans")}
+                  />
+                </TabPane>
+                <TabPane tabId="3">
+                  <CourseCategories
+                    state={this.state}
+                    errors={errors}
+                    onChangeCategory={id =>
+                      this.onChangeArray(id, "categories")
+                    }
+                    removeCategory={id =>
+                      this.removeFromArray(id, "categories")
+                    }
+                    addCategory={this.addToArray("categories")}
+                    handleFileUpload={id => this.handleFileUpload(id)}
+                  />
+                </TabPane>
+              </TabContent>
 
               <button className="btn btn-lg btn-secondary" type="submit">
                 Submit
               </button>
             </form>
-          </div>
-        </div>
-      </div>
+          </Col>
+        </Row>
+      </Container>
     );
   }
 }
@@ -337,7 +340,6 @@ EditCourse.propTypes = {
   updateCourse: PropTypes.func.isRequired,
   getCourse: PropTypes.func.isRequired,
   addCourse: PropTypes.func.isRequired,
-  resetMsg: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
   course: PropTypes.object.isRequired,
   errors: PropTypes.object.isRequired
@@ -351,5 +353,5 @@ const mapStateToProptypes = state => ({
 
 export default connect(
   mapStateToProptypes,
-  { updateCourse, getCourse, addCourse, resetMsg }
+  { updateCourse, getCourse, addCourse }
 )(EditCourse);
